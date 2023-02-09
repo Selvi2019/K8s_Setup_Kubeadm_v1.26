@@ -28,7 +28,7 @@
 
 ## Install containerd run time
     sudo apt install -y curl gnupg2 software-properties-common apt-transport-https ca-certificates
-    
+ 
 ##### **Enable docker repository**
     sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmour -o /etc/apt/trusted.gpg.d/docker.gpg
     sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
@@ -49,30 +49,29 @@
     sudo apt install -y kubelet kubeadm kubectl
     sudo apt-mark hold kubelet kubeadm kubectl
 
-    ```markdown
-       sudo apt-get install -y jq
-       local_ip="$(ip --json a s | jq -r '.[] | if .ifname == "eth1" then .addr_info[] | if .family == "inet" then .local else empty end else empty end')"
-       cat > /etc/default/kubelet << EOF
-       KUBELET_EXTRA_ARGS=--node-ip=$local_ip
-       EO
-    ```
+    sudo apt-get install -y jq
+    local_ip="$(ip --json a s | jq -r '.[] | if .ifname == "eth1" then .addr_info[] | if .family == "inet" then .local else empty end else empty end')"
+
+    cat > /etc/default/kubelet << EOF
+    KUBELET_EXTRA_ARGS=--node-ip=$local_ip
+    EO
+ 
   ## Initialize K8s cluster with Kubeadm
     
-        - IPADDR="192.168.56.2"
-          NODENAME=$(hostname -s)
-          POD_CIDR="10.244.0.0/16"
+    IPADDR="192.168.56.2"
+    NODENAME=$(hostname -s)
+    POD_CIDR="10.244.0.0/16"
    
 
     sudo kubeadm init --apiserver-advertise-address=$IPADDR --apiserver-cert-extra-sans=$IPADDR --pod-network-cidr=$POD_CIDR --node-name $NODENAME --ignore-preflight-errors Swap
 
 ## Run below commands as a non-root user in master node
-    ** please note down join command from previous output as we need it to execute it on worker node **
+**please note down join command from previous output as we need it to execute it on worker node**
 
-     ```
-     mkdir -p $HOME/.kube
-     sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-     sudo chown $(id -u):$(id -g) $HOME/.kube/config
-     ```
+    mkdir -p $HOME/.kube
+    sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+    sudo chown $(id -u):$(id -g) $HOME/.kube/config
+    
     kubectl cluster-info
     kubectl get nodes
 
