@@ -57,11 +57,11 @@
        EO
     ```
   ## Initialize K8s cluster with Kubeadm
-    ```
-    IPADDR="192.168.56.2"
-    NODENAME=$(hostname -s)
-    POD_CIDR="10.244.0.0/16"
-    ```
+    
+        - IPADDR="192.168.56.2"
+          NODENAME=$(hostname -s)
+          POD_CIDR="10.244.0.0/16"
+   
 
     sudo kubeadm init --apiserver-advertise-address=$IPADDR --apiserver-cert-extra-sans=$IPADDR --pod-network-cidr=$POD_CIDR --node-name $NODENAME --ignore-preflight-errors Swap
 
@@ -84,4 +84,8 @@
 ## Install Pod Network addon:
     curl https://projectcalico.docs.tigera.io/manifests/calico.yaml -O
     kubectl apply -f calico.yaml
+## Verify the status of nodes
+    kubectl get nodes
+## Verify the status of pods:
+    kubectl get po -n kube-system
 
